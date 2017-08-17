@@ -1,0 +1,8 @@
+FROM node:alpine
+
+MAINTAINER runphp <runphp@qq.com>
+
+ENV NPM_CONFIG_LOGLEVEL warn
+ENV NODE_ENV production
+
+WORKDIR /var/www/html

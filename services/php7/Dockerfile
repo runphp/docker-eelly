@@ -1,8 +1,8 @@
-FROM php:5-fpm-alpine
+FROM php:7-fpm-alpine
 
 MAINTAINER runphp <runphp@qq.com>
 
-ENV PHALCON_VERSION=3.2.1
+ENV PHALCON_VERSION=3.2.2
 
 # compile phalcon extension
 RUN set -xe \
@@ -18,23 +18,6 @@ RUN set -xe \
     && pecl install igbinary-2.0.1 \
     && docker-php-ext-enable igbinary
 
-# add memcached extension
-ENV MEMCACHED_DEPS zlib-dev libmemcached-dev cyrus-sasl-dev
-RUN set -xe \
-    && apk add --no-cache libmemcached-libs zlib \
-    && apk add --no-cache --virtual .memcached-deps $MEMCACHED_DEPS \
-    && pecl install memcached-2.2.0 \
-    && docker-php-ext-enable memcached
-
-# add redis extension
-RUN curl -fsSL 'https://pecl.php.net/get/redis-3.1.3.tgz' -o redis.tar.gz \
-    && mkdir -p /tmp/redis \
-    && tar -xf redis.tar.gz -C /tmp/redis --strip-components=1 \
-    && rm redis.tar.gz \
-    && docker-php-ext-configure /tmp/redis --enable-redis-igbinary \
-    && docker-php-ext-install /tmp/redis \
-    && rm -r /tmp/redis
-
 # add mongodb extension
 RUN set -xe \
     && apk add --no-cache --virtual openssl-dev \
@@ -47,3 +30,5 @@ RUN docker-php-ext-install pdo_mysql bcmath
 WORKDIR /var/www
 
 ADD php.ini /usr/local/etc/php/
+
+EXPOSE 9000

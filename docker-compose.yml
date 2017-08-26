@@ -9,10 +9,14 @@ services:
             MYSQL_DATABASE: mariadb
             MYSQL_USER: mariadb
             MYSQL_PASSWORD: mariadb
+        networks:
+            app-network:
     mongo:
         build: services/mongo
         ports:
-             - "27017:27017"
+            - "27017:27017"
+        networks:
+            app-network:
     nginx:
         build: services/nginx
         ports:
@@ -20,6 +24,12 @@ services:
         depends_on:
             - php5
             - php7
+        networks:
+            app-network:
+                aliases:
+                    - api.eelly.dev
+                    - www.eelly.dev
+                    - m.eelly.dev
         volumes:
             - ./workspace:/var/www
             - ./workspace/logs/nginx:/var/log/nginx
@@ -31,11 +41,19 @@ services:
         build: services/php5
         volumes:
             - ./workspace:/var/www
+        networks:
+            app-network:
     php7:
         build: services/php7
         volumes:
             - ./workspace:/var/www
+        networks:
+            app-network:
     redis:
         build: services/redis
         ports:
             - "6379:6379"
+        networks:
+            app-network:
+networks:
+    app-network:
